@@ -1,0 +1,12 @@
+.customTable td {
+    padding-top: 4px; /* Adjust the value to decrease the space */
+    padding-bottom: 4px; /* Adjust the value to decrease the space */
+}
+
+.customTable tr {
+    margin-bottom: 0; /* Remove any margin between rows */
+}
+
+.highlight {
+    background-color: yellow; /* Adjust the color as needed */
+}

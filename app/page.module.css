@@ -1,0 +1,7 @@
+.customTable td, .customTable th {
+    padding: 4px; /* Adjust the value to decrease the space */
+}
+
+.customTable tr {
+    margin-bottom: 0; /* Remove any margin between rows */
+}

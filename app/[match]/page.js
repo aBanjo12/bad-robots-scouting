@@ -3,9 +3,7 @@ import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '../../comp
 import Link from 'next/link';
 
 export default async function Page({ params }) {
-    const matchKey = (await params).match;
-    const data = await makeRequest("/match/" + matchKey);
-
+    // ... existing code ...
     return (
         <div className="container mx-auto p-4">
             <Card>

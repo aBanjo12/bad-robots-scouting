@@ -3,7 +3,7 @@ import { fetchDataFromServer } from '@/utils/blue-api-helper';
 
 export default async function handler(req, res) {
     try {
-        const competitionIds = await fetchDataFromServer('/events/2024/keys');
+        const competitionIds = await fetchDataFromServer('/events/2025/keys');
         res.status(200).json(competitionIds);
     } catch (error) {
         console.error('Error fetching competition IDs:', error);

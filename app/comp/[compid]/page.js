@@ -67,14 +67,14 @@ export default function Page({ params }) {
                                 </td>
                                 <td className="px-2 py-1 whitespace-nowrap">
                                     {match.alliances.red.team_keys.map(team => (
-                                        <Link key={team} href={`/robot/${team}`}>
+                                        <Link key={team} href={`/comp/${competitionId}/team/${team}`}>
                                             {team}
                                         </Link>
                                     )).reduce((prev, curr) => [prev, ', ', curr])}
                                 </td>
                                 <td className="px-2 py-1 whitespace-nowrap">
                                     {match.alliances.blue.team_keys.map(team => (
-                                        <Link key={team} href={`/robot/${team}`}>
+                                        <Link key={team} href={`/comp/${competitionId}/team/${team}`}>
                                             {team}
                                         </Link>
                                     )).reduce((prev, curr) => [prev, ', ', curr])}

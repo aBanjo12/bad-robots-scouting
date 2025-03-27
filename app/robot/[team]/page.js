@@ -6,7 +6,7 @@ export default async function Page({ params }) {
     const team = (await params).team;
     const teamNumber = team.replace('frc', '');
 
-    const competitionId = "2024ohmv";
+    const competitionId = "2025ohmv";
     const year = competitionId.substring(0, 4);
 
     try {

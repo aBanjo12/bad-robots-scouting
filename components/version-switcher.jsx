@@ -16,7 +16,7 @@ import {
 } from "@/components/ui/sidebar"
 
 export function VersionSwitcher() {
-  const versions = ["2024ohmv"];
+  const versions = ["2025ohmv"];
   const [selectedVersion, setSelectedVersion] = React.useState(versions[0]);
 
   return (

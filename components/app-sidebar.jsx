@@ -17,39 +17,11 @@ import {
 } from "@/components/ui/sidebar";
 
 const data = {
-  versions: ["2024ohmv"],
+  versions: ["2025ohmv"],
   navMain: [
     {
       title: "Home",
       url: "/",
-    },
-    {
-      title: "Teams",
-      url: "/teams",
-      items: [
-        {
-          title: "Search Teams",
-          url: "/search",
-        },
-        {
-          title: "Team List",
-          url: "/teams/list",
-        },
-      ],
-    },
-    {
-      title: "API Reference",
-      url: "/api",
-      items: [
-        {
-          title: "Blue API",
-          url: "/api/blue",
-        },
-        {
-          title: "Statbotics API",
-          url: "/api/statbotics",
-        },
-      ],
     },
   ],
 };

@@ -2,11 +2,13 @@
 
 import React, { useEffect, useState } from 'react';
 import { makeRequest } from '@/utils/blue-api-helper';
-import { makeRequest as makeStatboticsRequest } from '@/utils/statbotics-api-helper';
+import {makeRequest as makeStatboticsRequest, useSetupCache as setupStatCache} from '@/utils/statbotics-api-helper';
 import Link from 'next/link';
 import styles from './page.module.css';
 
 export default function Home() {
+  setupStatCache(); // Set up the cache for Statbotics API requests
+
   const [teams, setTeams] = useState([]);
   const competitionId = "2025ohmv";
 

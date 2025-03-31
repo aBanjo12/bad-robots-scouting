@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { makeRequest } from '@/utils/blue-api-helper';
+import {fetchDataFromServer, makeRequest} from '@/utils/blue-api-helper';
 import styles from './page.module.css';
 
 export default function Page({ params }) {
@@ -30,10 +30,10 @@ export default function Page({ params }) {
             }
 
             try {
-                const teamsResponse = await makeRequest(`/event/${competitionId}/teams`);
+                const teamsResponse = await fetchDataFromServer(`/event/${competitionId}/teams`);
                 setTeamsData(teamsResponse);
 
-                const matchesResponse = await makeRequest(`/event/${competitionId}/matches`);
+                const matchesResponse = await fetchDataFromServer(`/event/${competitionId}/matches`);
                 const sortedMatches = matchesResponse.sort((a, b) => a.match_number - b.match_number);
                 setMatchesData(sortedMatches);
                 localStorage.setItem(`matches_${competitionId}`, JSON.stringify(sortedMatches));
@@ -67,15 +67,15 @@ export default function Page({ params }) {
                                 </td>
                                 <td className="px-2 py-1 whitespace-nowrap">
                                     {match.alliances.red.team_keys.map(team => (
-                                        <Link key={team} href={`/comp/${competitionId}/team/${team}`}>
-                                            {team}
+                                        <Link key={team} className = {"text-blue-500 underline"} href={`/comp/${competitionId}/team/${team.substring(3)}`}>
+                                            {team.substring(3)}
                                         </Link>
                                     )).reduce((prev, curr) => [prev, ', ', curr])}
                                 </td>
                                 <td className="px-2 py-1 whitespace-nowrap">
                                     {match.alliances.blue.team_keys.map(team => (
-                                        <Link key={team} href={`/comp/${competitionId}/team/${team}`}>
-                                            {team}
+                                        <Link key={team} className = {"text-blue-500 underline"} href={`/comp/${competitionId}/team/${team.substring(3)}`}>
+                                            {team.substring(3)}
                                         </Link>
                                     )).reduce((prev, curr) => [prev, ', ', curr])}
                                 </td>

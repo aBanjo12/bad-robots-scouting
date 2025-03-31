@@ -1,4 +1,3 @@
-import { makeRequest } from '../../utils/blue-api-helper';
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '../../components/ui/card';
 import Link from 'next/link';
 

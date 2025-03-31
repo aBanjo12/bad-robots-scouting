@@ -14,10 +14,18 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
+import {useCacheContext} from "@/components/CacheProvider";
 
-export function VersionSwitcher() {
-  const versions = ["2025ohmv"];
-  const [selectedVersion, setSelectedVersion] = React.useState(versions[0]);
+export function CompSwitcher() {
+  useCacheContext()
+
+  const comps = ["2025ohmv"];
+  const [selectedComp, setSelectedComp] = React.useState(comps[0]);
+
+  function cacheSelected(comp) {
+    setSelectedComp(comp)
+
+  }
 
   return (
       <SidebarMenu>
@@ -33,16 +41,16 @@ export function VersionSwitcher() {
                 </div>
                 <div className="flex flex-col gap-0.5 leading-none">
                   <span className="font-semibold">Competition</span>
-                  <span className="">{selectedVersion}</span>
+                  <span className="">{selectedComp}</span>
                 </div>
                 <ChevronsUpDown className="ml-auto" />
               </SidebarMenuButton>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="w-[--radix-dropdown-menu-trigger-width]" align="start">
-              {versions.map((version) => (
-                  <DropdownMenuItem key={version} onSelect={() => setSelectedVersion(version)}>
-                    v{version}{" "}
-                    {version === selectedVersion && <Check className="ml-auto" />}
+              {comps.map((comp) => (
+                  <DropdownMenuItem key={comp} onSelect={() => cacheSelected(comp)}>
+                    {comp}{" "}
+                    {comp === selectedComp && <Check className="ml-auto" />}
                   </DropdownMenuItem>
               ))}
             </DropdownMenuContent>

@@ -16,7 +16,7 @@ export function SearchForm({ ...props }) {
   const handleSubmit = (event) => {
     event.preventDefault();
     const searchQuery = event.target.search.value;
-    router.push(`/robot/frc${searchQuery}`);
+    router.push(`/comp/{}/team/${searchQuery}`);
   };
   return (
     (<form {...props} onSubmit={handleSubmit}>

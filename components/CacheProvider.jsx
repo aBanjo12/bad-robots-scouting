@@ -1,3 +1,5 @@
+"use client"
+
 import React, { createContext, useContext, useState, useEffect } from "react";
 
 const CacheContext = createContext();
@@ -16,6 +18,7 @@ export function CacheProvider({ children }) {
 
     const setCacheItem = (key, value) => {
         const newCache = { ...cache, [key]: value };
+        setCache(newCache);
         localStorage.setItem('appCache', JSON.stringify(newCache));
     };
 

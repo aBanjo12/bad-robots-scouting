@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import styles from './page.module.css';
+import Link from "next/link";
 
 export default function TeamPage({ params }) {
     const [compid, setCompid] = useState('');
@@ -48,7 +49,7 @@ export default function TeamPage({ params }) {
     }, [epaData, allEpaValues]);
 
     if (epaData === null || Object.keys(allEpaValues).length === 0) {
-        return <div>Please visit the home page to obtain the necessary cache before accessing this page.</div>;
+        return <div>Team not found, or you have not fetched the teams net please visit <Link className={"text-blue-600 underline"} href={'/'}>home</Link></div>;
     }
 
     const interpolateColor = (value, min, max) => {

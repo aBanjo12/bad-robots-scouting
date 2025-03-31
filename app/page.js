@@ -1,9 +1,10 @@
 "use client"
 
 import React, { useEffect, useState } from 'react';
-import { makeRequest } from '@/utils/blue-api-helper';
-import {makeRequest as makeStatboticsRequest, useSetupCache as setupStatCache} from '@/utils/statbotics-api-helper';
+import { fetchDataFromServer } from '@/utils/blue-api-helper';
+import { makeRequest as makeStatboticsRequest, useSetupCache as setupStatCache } from '@/utils/statbotics-api-helper';
 import Link from 'next/link';
+import { useCacheContext } from '@/components/CacheProvider';
 import styles from './page.module.css';
 
 export default function Home() {
@@ -11,19 +12,20 @@ export default function Home() {
 
   const [teams, setTeams] = useState([]);
   const competitionId = "2025ohmv";
+  const { getCache, setCacheItem } = useCacheContext();
 
   useEffect(() => {
     console.log('useEffect triggered');
     async function fetchTeams() {
-      const cachedTeams = localStorage.getItem('teamsWithEpa');
+      const cachedTeams = getCache('teamsWithEpa');
       if (cachedTeams) {
-        setTeams(JSON.parse(cachedTeams));
+        setTeams(cachedTeams);
         return;
       }
 
       try {
         console.log(`/event/${competitionId}/teams`);
-        const teamsData = await makeRequest(`/event/${competitionId}/teams`);
+        const teamsData = await fetchDataFromServer(`/event/${competitionId}/teams`);
         console.log('Teams data:', teamsData);
         const teamsWithEpa = await Promise.all(teamsData.map(async (team) => {
           try {
@@ -38,14 +40,14 @@ export default function Home() {
         }));
         teamsWithEpa.sort((a, b) => b.team_year.epa.breakdown.total_points - a.team_year.epa.breakdown.total_points);
         setTeams(teamsWithEpa);
-        localStorage.setItem('teamsWithEpa', JSON.stringify(teamsWithEpa));
+        setCacheItem('teamsWithEpa', teamsWithEpa);
       } catch (error) {
         console.error('Error fetching teams:', error);
       }
     }
 
     fetchTeams();
-  }, []);
+  }, [competitionId, getCache, setCacheItem]);
 
   return (
       <div className="container mx-auto p-4 mt-0">
@@ -65,7 +67,7 @@ export default function Home() {
           {teams.map((team, index) => (
               <tr key={team.team_number}>
                 <td className="px-2 py-1 whitespace-nowrap">{index + 1}</td>
-                <td className="px-2 py-1 whitespace-nowrap"><Link href={`comp/${competitionId}/team/${team.team_number}`}>{team.team_number}</Link></td>
+                <td className="px-2 py-1 whitespace-nowrap"><Link className={"text-blue-500 underline"} href={`comp/${competitionId}/team/${team.team_number}`}>{team.team_number}</Link></td>
                 <td className="px-2 py-1 whitespace-nowrap">{team.nickname}</td>
                 <td className="px-2 py-1 whitespace-nowrap">{team.city}, {team.state_prov}, {team.country}</td>
                 <td className="px-2 py-1 whitespace-nowrap">{team.team_year ? team.team_year.epa.breakdown.total_points : 'N/A'}</td>

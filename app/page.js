@@ -5,10 +5,11 @@ import { makeRequest } from '@/utils/blue-api-helper';
 import { makeRequest as makeStatboticsRequest } from '@/utils/statbotics-api-helper';
 import Link from 'next/link';
 import styles from './page.module.css';
+import {getComp} from "@/utils/comp-state";
 
 export default function Home() {
   const [teams, setTeams] = useState([]);
-  const competitionId = "2025ohmv";
+  const competitionId = getComp();
 
   useEffect(() => {
     console.log('useEffect triggered');

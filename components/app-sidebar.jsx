@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { SearchForm } from "@/components/search-form";
-import { VersionSwitcher } from "@/components/version-switcher";
+import { CompSwitcher } from "@/components/comp-switcher";
 import {
   Sidebar,
   SidebarContent,
@@ -39,7 +39,7 @@ export function AppSidebar({ ...props }) {
   return (
       <Sidebar {...props}>
         <SidebarHeader>
-          <VersionSwitcher versions={competitionIds} defaultVersion={competitionIds[0]} />
+          <CompSwitcher versions={competitionIds} defaultVersion={competitionIds[0]} />
           <SearchForm />
         </SidebarHeader>
         <SidebarContent>

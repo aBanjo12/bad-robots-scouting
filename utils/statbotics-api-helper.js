@@ -1,32 +1,30 @@
-import {useCacheContext} from "@/components/CacheProvider"
+// utils/statbotics-api-helper.js
+"use server"
 
-export function useSetupCache() {
-    const { getCache, setCacheItem } = useCacheContext();
+import { getCache, setCacheItem } from './cache';
 
-    // Prepopulate cache if needed
-    if (!getCache('initialSetup')) {
-        setCacheItem('initialSetup', true);
-    }
-}
+export async function fetchAndCacheData(path) {
+    const cacheKey = `statbotics_${path}`;
+    const cachedData = getCache(cacheKey);
 
-export async function makeRequest(path) {
-    if (typeof path !== 'string' || !path.startsWith('/')) {
-        throw new Error('Invalid path');
+    if (cachedData) {
+        return cachedData;
     }
 
     try {
         const response = await fetch("https://api.statbotics.io/v3" + path, {
-            method: 'GET', // or 'POST', 'PUT', etc.
+            method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
             }
         });
 
         if (!response.ok) {
-            throw new Error('Network response was not ok');
+            throw new Error("https://api.statbotics.io/v3" + path);
         }
 
         const data = await response.json();
+        setCacheItem(cacheKey, data);
         return data;
     } catch (error) {
         console.error('Fetch error:', error);

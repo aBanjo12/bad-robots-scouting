@@ -3,12 +3,15 @@
 import React, { useEffect, useState } from 'react';
 import styles from './page.module.css';
 import Link from "next/link";
+import { fetchAndCacheData as fetchAndCacheStatData } from '@/utils/statbotics-api-helper';
+import { getCache, setCacheItem } from '@/utils/cache';
 
 export default function TeamPage({ params }) {
     const [compid, setCompid] = useState('');
     const [team, setTeam] = useState('');
     const [epaData, setEpaData] = useState(null);
     const [allEpaValues, setAllEpaValues] = useState({});
+    const [error, setError] = useState(null);
 
     useEffect(() => {
         async function unwrapParams() {
@@ -23,33 +26,56 @@ export default function TeamPage({ params }) {
     useEffect(() => {
         if (!compid || !team) return;
 
-        const cachedTeamsWithEpa = localStorage.getItem('teamsWithEpa');
-        if (cachedTeamsWithEpa) {
-            const teamsWithEpa = JSON.parse(cachedTeamsWithEpa);
-            const teamData = teamsWithEpa.find(t => t.team_number === parseInt(team.replace('frc', '')));
-            if (teamData) {
-                setEpaData(teamData.team_year.epa);
-                const epaValuesByCategory = {};
-                teamsWithEpa.forEach(t => {
-                    Object.entries(t.team_year.epa.breakdown).forEach(([key, value]) => {
-                        if (!epaValuesByCategory[key]) {
-                            epaValuesByCategory[key] = [];
-                        }
-                        epaValuesByCategory[key].push(value);
-                    });
-                });
-                setAllEpaValues(epaValuesByCategory);
+        const fetchTeamData = async () => {
+            const cacheKey = `teamsWithEpa_${compid}_${team}`;
+            const cachedTeamData = getCache(cacheKey);
+
+            if (cachedTeamData) {
+                setEpaData(cachedTeamData.team_year.epa);
+                setAllEpaValues(cachedTeamData.allEpaValues);
+                return;
             }
-        }
+
+            try {
+                const teamYearData = await fetchAndCacheStatData(`/team_year/${team.replace('frc', '')}/2025`);
+                const teamsWithEpa = await Promise.all(
+                    (await fetchAndCacheData(`/event/${compid}/teams`)).map(async (team) => {
+                        const teamYearData = await fetchAndCacheStatData(`/team_year/${team.team_number}/2025`);
+                        return { ...team, team_year: teamYearData };
+                    })
+                );                const teamData = teamsWithEpa.find(t => t.team_number === parseInt(team.replace('frc', '')));
+
+                if (teamData) {
+                    setEpaData(teamYearData.epa);
+                    const epaValuesByCategory = {};
+                    teamsWithEpa.forEach(t => {
+                        Object.entries(t.team_year.epa.breakdown).forEach(([key, value]) => {
+                            if (!epaValuesByCategory[key]) {
+                                epaValuesByCategory[key] = [];
+                            }
+                            epaValuesByCategory[key].push(value);
+                        });
+                    });
+                    setAllEpaValues(epaValuesByCategory);
+                    setCacheItem(cacheKey, { team_year: teamYearData, allEpaValues: epaValuesByCategory });
+                } else {
+                    setError('Team data not found');
+                }
+            } catch (error) {
+                console.error('Error fetching team data:', error);
+                setError('Network request error');
+            }
+        };
+
+        fetchTeamData();
     }, [compid, team]);
 
-    useEffect(() => {
-        console.log('epaData:', epaData);
-        console.log('allEpaValues:', allEpaValues);
-    }, [epaData, allEpaValues]);
+    if (error) {
+        return <div>{error}. Please visit <Link className={"text-blue-600 underline"} href={'/'}>home</Link></div>;
+    }
 
     if (epaData === null || Object.keys(allEpaValues).length === 0) {
-        return <div>Team not found, or you have not fetched the teams net please visit <Link className={"text-blue-600 underline"} href={'/'}>home</Link></div>;
+        return <div>Team not found, or you have not fetched the teams yet. Please visit <Link className={"text-blue-600 underline"} href={'/'}>home</Link></div>;
     }
 
     const interpolateColor = (value, min, max) => {
